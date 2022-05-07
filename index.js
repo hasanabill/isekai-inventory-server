@@ -22,17 +22,24 @@ async function run() {
         await client.connect();
         const itemCollection = client.db('isekaiItem').collection('items');
 
-        app.get('/items', async (req, res) => {
+        app.get('/inventory', async (req, res) => {
             const query = {}
             const cursor = itemCollection.find(query)
             const result = await cursor.toArray();
             res.send(result)
         })
 
-        app.get('/item/:id', async (req, res) => {
+        app.get('/inventory/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) }
             const result = await itemCollection.findOne(query)
+            res.send(result)
+        })
+
+        app.delete('/item/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const result = await itemCollection.deleteOne(query)
             res.send(result)
         })
     }
