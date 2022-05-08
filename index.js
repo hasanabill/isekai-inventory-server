@@ -10,6 +10,7 @@ require('dotenv').config();
 app.use(cors());
 app.use(express.json())
 
+// JWT verification
 function verifyJWT(req, res, next) {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
