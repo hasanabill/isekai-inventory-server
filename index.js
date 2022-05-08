@@ -22,8 +22,18 @@ async function run() {
         await client.connect();
         const itemCollection = client.db('isekaiItem').collection('items');
 
+        // load all data
         app.get('/inventory', async (req, res) => {
             const query = {}
+            const cursor = itemCollection.find(query)
+            const result = await cursor.toArray();
+            res.send(result)
+        })
+
+        // filter specific data by email
+        app.get('/myitems', async (req, res) => {
+            const email = req?.query?.email;
+            const query = { email }
             const cursor = itemCollection.find(query)
             const result = await cursor.toArray();
             res.send(result)
@@ -36,6 +46,14 @@ async function run() {
             res.send(result)
         })
 
+        // add item
+        app.post('/inventory', async (req, res) => {
+            const newItem = req.body;
+            const result = await itemCollection.insertOne(newItem);
+            res.send(result);
+        })
+
+        // DELETE ITEM
         app.delete('/item/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) }
