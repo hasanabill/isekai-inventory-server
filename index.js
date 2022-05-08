@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
 const app = express();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000;
@@ -21,6 +22,16 @@ async function run() {
     try {
         await client.connect();
         const itemCollection = client.db('isekaiItem').collection('items');
+
+        // Authentication
+        app.post('/login', async (req, res) => {
+            const user = req.body;
+            const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN, {
+                expiresIn: '1d'
+            });
+            res.send({ accessToken });
+        })
+
 
         // load all data
         app.get('/inventory', async (req, res) => {
